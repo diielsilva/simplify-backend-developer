@@ -6,10 +6,9 @@ import com.dev.backend_simplify.domain.services.TodoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/todos")
@@ -28,6 +27,14 @@ public class TodoController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TodoResponse>> findByPriority(@RequestParam String priority) {
+        List<TodoResponse> response = service.findByPriority(priority);
+
+        return ResponseEntity
+                .ok(response);
     }
 
 }
