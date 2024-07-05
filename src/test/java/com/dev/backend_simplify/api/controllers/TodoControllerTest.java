@@ -202,4 +202,26 @@ class TodoControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    @Test
+    void shouldDeleteATodo() {
+        Todo todo = new Todo(
+                "Learn Angular 18",
+                "I should learn Angular 18",
+                false,
+                Priority.HIGH
+        );
+
+        repository.save(todo);
+
+        ResponseEntity<Void> response = webClient.exchange(
+                "/api/v1/todos/{id}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                todo.getId()
+        );
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
 }
