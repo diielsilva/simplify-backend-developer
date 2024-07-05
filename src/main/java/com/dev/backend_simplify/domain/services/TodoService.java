@@ -42,6 +42,18 @@ public class TodoService {
     }
 
     @Transactional
+    public TodoResponse update(Long id, TodoRequest request) {
+        Todo todo = mapper.toModel(request);
+        Todo stored = findById(id);
+
+        todo.setId(stored.getId());
+
+        repository.save(todo);
+
+        return mapper.toResponse(todo);
+    }
+
+    @Transactional
     public void delete(Long id) {
         Todo todo = findById(id);
 
