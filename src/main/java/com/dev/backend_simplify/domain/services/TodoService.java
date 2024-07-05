@@ -4,6 +4,7 @@ import com.dev.backend_simplify.common.dtos.TodoRequest;
 import com.dev.backend_simplify.common.dtos.TodoResponse;
 import com.dev.backend_simplify.common.mappers.ModelMapper;
 import com.dev.backend_simplify.domain.enums.Priority;
+import com.dev.backend_simplify.domain.exceptions.TodoNotFoundException;
 import com.dev.backend_simplify.domain.models.Todo;
 import com.dev.backend_simplify.domain.repositories.TodoRepository;
 import org.springframework.stereotype.Service;
@@ -40,4 +41,16 @@ public class TodoService {
                 .toList();
     }
 
+    @Transactional
+    public void delete(Long id) {
+        Todo todo = findById(id);
+
+        repository.delete(todo);
+    }
+
+    private Todo findById(Long id) {
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new TodoNotFoundException(String.format("Todo: %s not found!", id)));
+    }
 }
