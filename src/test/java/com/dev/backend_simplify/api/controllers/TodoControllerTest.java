@@ -203,6 +203,66 @@ class TodoControllerTest {
     }
 
     @Test
+    void shouldUpdateATodo() {
+        Todo todo = new Todo(
+                "Learn Angular 18",
+                "I should learn Angular 18",
+                false,
+                Priority.HIGH
+        );
+
+        TodoRequest request = new TodoRequest(
+                "Learn VueJS",
+                "I should learn VueJS",
+                false,
+                "LOW"
+        );
+
+        repository.save(todo);
+
+        ResponseEntity<TodoResponse> response = webClient.exchange(
+                "/api/v1/todos/{id}",
+                HttpMethod.PUT,
+                new HttpEntity<>(request),
+                TodoResponse.class,
+                todo.getId()
+        );
+
+        assertAll(() -> {
+            TodoResponse body = response.getBody();
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(body);
+            assertEquals(request.name(), body.name());
+            assertEquals(request.description(), body.description());
+            assertEquals(request.completed(), body.completed());
+            assertEquals(request.priority(), body.priority().name());
+        });
+
+    }
+
+    @Test
+    void shouldNotUpdateATodo_WhenIdWasNotFound() {
+        TodoRequest request = new TodoRequest(
+                "Learn VueJS",
+                "I should learn VueJS",
+                false,
+                "LOW"
+        );
+
+        ResponseEntity<ErrorResponse> response = webClient.exchange(
+                "/api/v1/todos/{id}",
+                HttpMethod.PUT,
+                new HttpEntity<>(request),
+                ErrorResponse.class,
+                0
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    }
+
+    @Test
     void shouldDeleteATodo() {
         Todo todo = new Todo(
                 "Learn Angular 18",
